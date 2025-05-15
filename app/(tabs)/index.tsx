@@ -1,4 +1,7 @@
 import Button from '@/components/Button'
+import CircleButton from '@/components/CircleButton'
+import EmojiPicker from '@/components/EmojiPicker'
+import IconButton from '@/components/IconButton'
 import ImageViewer from '@/components/ImageViewer'
 import * as ImagePicker from 'expo-image-picker'
 import { useState } from 'react'
@@ -10,6 +13,9 @@ export default function Index() {
   const [selectedImage, setSelectedImage] = useState<string | undefined>(
     undefined
   )
+  const [showAppOptions, setShowAppOptions] = useState<boolean>(false)
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false)
+
   const pickImageAsync = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'],
@@ -23,6 +29,21 @@ export default function Index() {
       alert('You did not select an image.')
     }
   }
+
+  const onReset = () => {
+    setShowAppOptions(false)
+  }
+
+  const onAddSticker = () => {
+    setIsModalVisible(true)
+  }
+
+  const onModalClose = () => {
+    setIsModalVisible(false)
+  }
+
+  const onSaveImageAsync = async () => {}
+
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
@@ -31,14 +52,33 @@ export default function Index() {
           selectedImage={selectedImage}
         />
       </View>
-      <View style={styles.footerContainer}>
-        <Button
-          theme='primary'
-          label='Choose a Photo'
-          onPress={pickImageAsync}
-        />
-        <Button label='Use This Photo' />
-      </View>
+      {showAppOptions ? (
+        <View style={styles.optionsContainer}>
+          <IconButton icon='refresh' label='Save' onPress={onReset} />
+          <CircleButton onPress={onAddSticker} />
+          <IconButton
+            icon='save-alt'
+            label='Reset'
+            onPress={onSaveImageAsync}
+          />
+        </View>
+      ) : (
+        <View style={styles.footerContainer}>
+          <Button
+            theme='primary'
+            label='Choose a Photo'
+            onPress={pickImageAsync}
+          />
+          <Button
+            label='Use This Photo'
+            onPress={() => setShowAppOptions(true)}
+          />
+        </View>
+      )}
+      <EmojiPicker
+        isVisible={isModalVisible}
+        onClose={onModalClose}
+      ></EmojiPicker>
     </View>
   )
 }
@@ -57,5 +97,11 @@ const styles = StyleSheet.create({
   footerContainer: {
     flex: 1 / 3,
     alignItems: 'center',
+  },
+  optionsContainer: {
+    position: 'absolute',
+    bottom: 80,
+    alignItems: 'center',
+    flexDirection: 'row',
   },
 })
