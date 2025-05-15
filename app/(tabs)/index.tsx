@@ -58,10 +58,10 @@ export default function Index() {
           imgSource={PlaceholderImage}
           selectedImage={selectedImage}
         />
+        {pickedEmoji && (
+          <EmojiSticker imageSize={40} stickerSource={pickedEmoji} />
+        )}
       </View>
-      {pickedEmoji ? (
-        <EmojiSticker imageSize={40} stickerSource={pickedEmoji} />
-      ) : null}
       {showAppOptions ? (
         <View style={styles.optionsContainer}>
           <IconButton icon='refresh' label='Save' onPress={onReset} />
